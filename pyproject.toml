@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "biomed"
+version = "0.1.0"
+description = "A bot for analyzing"
+authors = ["Your Name <you@example.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+sqlalchemy = "^2.0.36"
+pydantic = "^2.9.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
