@@ -37,12 +37,12 @@ class User(Base):
     telegram_id = Column(BigInteger, unique=True, nullable=False)
     gender = Column(Enum(GenderEnum), nullable=False)
     birth_year = Column(Integer, nullable=False)
+    city = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
 
-    # Связь с анализами и тегами
     analyses = relationship('Analysis', back_populates='user', cascade='all, delete-orphan')
     tags = relationship('Tag', back_populates='user', cascade='all, delete-orphan')
 
@@ -73,7 +73,6 @@ class Analysis(Base):
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
 
-    # Связи
     user = relationship('User', back_populates='analyses')
     assigned_operator = relationship('Operator', back_populates='analyses')
     tags = relationship('Tag', secondary=analysis_tag_association, back_populates='analyses')
@@ -119,7 +118,7 @@ class Token(Base):
     __tablename__ = 'tokens'
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
-    operator_id = Column(BigInteger, ForeignKey('operators.id'), unique=True, nullable=False)
+    operator_id = Column(BigInteger, ForeignKey('operators.id', use_alter=True), unique=True, nullable=False)
     value = Column(String, unique=True, nullable=False)
     is_active = Column(Boolean, nullable=False, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
