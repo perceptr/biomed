@@ -1,15 +1,17 @@
 from src.repositories.base import Repository
 from src.models import Operator
-from src.schemas import OperatorCreateSchema, OperatorSchema
+from src.schemas import OperatorCreateSchema, OperatorSchema, TokenSchema
 
 
 class OperatorRepository(Repository[Operator]):
     __model__ = Operator
 
-    async def create_operator(self, schema: OperatorCreateSchema) -> OperatorSchema:
+    async def create_operator(
+        self, schema: OperatorCreateSchema, token: TokenSchema
+    ) -> OperatorSchema:
         """Создать запись об операторе"""
 
-        result = await self._create(**schema.model_dump())
+        result = await self._create(**schema.model_dump(), token_id=token.id)
 
         return OperatorSchema.model_validate(result)
 

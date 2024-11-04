@@ -65,12 +65,20 @@ class TagCreateSchema(TagSchema):
 class TokenSchema(BaseModel):
     """Схема токена"""
 
+    id: int
+
     model_config = ConfigDict(
         str_strip_whitespace=True, frozen=True, from_attributes=True
     )
 
     is_active: bool = True
     value: str = Field(default_factory=uuid.uuid4)
+
+
+class TokenCreateSchema(TokenSchema):
+    """Схема создания токена"""
+
+    id: int | None = None
 
 
 class OperatorSchema(BaseModel):

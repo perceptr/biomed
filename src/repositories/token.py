@@ -1,12 +1,12 @@
 from src.repositories.base import Repository
 from src.models import Token
-from src.schemas import TokenSchema
+from src.schemas import TokenCreateSchema, TokenSchema
 
 
 class TokenRepository(Repository[Token]):
     __model__ = Token
 
-    async def create_token(self, schema: TokenSchema) -> None:
+    async def create_token(self, schema: TokenCreateSchema) -> None:
         """Создать запись о токене"""
 
         await self._create(**schema.model_dump())
