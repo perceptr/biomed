@@ -11,12 +11,12 @@ from sqlalchemy import (
     func,
     Table,
 )
-from sqlalchemy.orm import relationship, DeclarativeBase
+from sqlalchemy.orm import relationship, DeclarativeBase, MappedAsDataclass
 
 from src.schemas import AnalysisStatusEnum, GenderEnum
 
 
-class Base(DeclarativeBase):
+class Base(MappedAsDataclass, DeclarativeBase):
     """Базовый класс для моделей алхимии"""
 
 

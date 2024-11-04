@@ -22,7 +22,7 @@ class Repository(Generic[T]):
         async with self._async_sessionmaker() as session:
             yield session
 
-    async def _create(self, **values: dict[str, Any]) -> T:
+    async def _create(self, **values: Any) -> T:
         async with self._get_session() as session:
             value = self.__model__(**values)
             session.add(value)
@@ -47,7 +47,7 @@ class Repository(Generic[T]):
             return records.scalars().first()
 
     async def _update(
-        self, *filters: ColumnElement[bool], **values: dict[str, Any]
+        self, *filters: ColumnElement[bool], **values: Any
     ) -> None:
         async with self._get_session() as session:
             await session.execute(

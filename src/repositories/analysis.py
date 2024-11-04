@@ -1,4 +1,5 @@
 from asyncio import Semaphore
+from dataclasses import asdict
 from sqlalchemy import null, select
 
 from src.repositories.base import Repository
@@ -24,25 +25,23 @@ class AnalysisRepository(Repository[Analysis]):
 
         result = await self._create(**schema.model_dump(), user_id=user_schema.id)
 
-        return AnalysisSchema.model_validate(result)
+        return AnalysisSchema(**asdict(result))
 
     async def get_analysis_by_id(self, analysis_id: int) -> AnalysisSchema | None:
+        """ Получить анализ по id """
+
         result = await self._get(Analysis.id == analysis_id)
 
-        if result is None:
-            return None
-
-        return AnalysisSchema.model_validate(result)
+        return AnalysisSchema(**asdict(result)) if result else None
 
     async def get_analysis_by_operator(
         self, operator: OperatorSchema
     ) -> AnalysisSchema | None:
+        """ Получить анализ по присвоенному оператору """
+
         result = await self._get(Analysis.assigned_operator_id == operator.id)
 
-        if result is None:
-            return None
-
-        return AnalysisSchema.model_validate(result)
+        return AnalysisSchema(**asdict(result)) if result else None
 
     async def _get_oldest_uncomplited_analysis(self) -> AnalysisSchema | None:
         async with self._get_session() as session:
@@ -54,14 +53,12 @@ class AnalysisRepository(Repository[Analysis]):
 
             result = records.scalars().first()
 
-            if result is None:
-                return None
-
-            return AnalysisSchema.model_validate(result)
+            return AnalysisSchema(**asdict(result)) if result else None
 
     async def _set_operator_to_analysis(
         self, analysis_id: int, operator_id: int
     ) -> None:
+
         await self._update(Analysis.id == analysis_id, operator_id=operator_id)
 
     async def unset_operator_from_analyses(self, operator: OperatorSchema):

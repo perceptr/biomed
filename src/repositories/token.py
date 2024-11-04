@@ -1,3 +1,4 @@
+from dataclasses import asdict
 from src.repositories.base import Repository
 from src.models import Token
 from src.schemas import TokenCreateSchema, TokenSchema
@@ -15,11 +16,8 @@ class TokenRepository(Repository[Token]):
         """Получить токен по значению"""
 
         result = await self._get(Token.value == token_value)
-
-        if result is None:
-            return None
-
-        return TokenSchema.model_validate(result)
+        
+        return TokenSchema(**asdict(result)) if result else None
 
     async def set_token_status(self, token_value: str, *, is_active: bool) -> None:
         """Установить статус токена"""
