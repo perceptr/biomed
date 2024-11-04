@@ -19,12 +19,11 @@ class AnalysisStatusEnum(StrEnum):
 class UserSchema(BaseModel):
     """Схема пользователя"""
 
-    id: int
-
     model_config = ConfigDict(
         str_strip_whitespace=True, frozen=True, from_attributes=True
     )
 
+    id: int
     telegram_id: int
 
     birth_year: int = Field(ge=1812, le=2024)
@@ -72,7 +71,7 @@ class TokenSchema(BaseModel):
     )
 
     is_active: bool = True
-    value: str = Field(default_factory=uuid.uuid4)
+    value: str = Field(default_factory=lambda: str(uuid.uuid4()))
 
 
 class TokenCreateSchema(TokenSchema):
@@ -92,7 +91,7 @@ class OperatorSchema(BaseModel):
 
     telegram_id: int
 
-    is_active: bool = True
+    is_online: bool = True
     token: TokenSchema
 
 

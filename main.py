@@ -1,12 +1,11 @@
 import asyncio
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
-
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+
 import src.dependencies.db as db_module
-from src.repositories.user import UserRepository
 from src.settings import DB_USER, DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT
 
 
@@ -31,12 +30,7 @@ async def lifespan() -> AsyncIterator[None]:
 
 
 async def start_app():
-    async_sessionmaker_ = db_module.get_async_sessionmaker()
-    user_repository = UserRepository(async_sessionmaker_)
-
-    founded_user = await user_repository.get_user_by_telegram_id(1234)
-
-    print(founded_user)
+    async_sessionmaker_ = db_module.get_async_sessionmaker() # noqa
 
 
 async def main():

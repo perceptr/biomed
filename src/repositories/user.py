@@ -20,4 +20,3 @@ class UserRepository(Repository[User]):
         result = await self._get(User.telegram_id == telegram_id)
 
         return UserSchema(**asdict(result)) if result else None
-

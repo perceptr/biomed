@@ -27,6 +27,7 @@ class Repository(Generic[T]):
             value = self.__model__(**values)
             session.add(value)
             await session.commit()
+            await session.refresh(value)
             return value
 
     async def _delete(self, *filters: ColumnElement[bool]) -> None:
@@ -46,9 +47,7 @@ class Repository(Generic[T]):
 
             return records.scalars().first()
 
-    async def _update(
-        self, *filters: ColumnElement[bool], **values: Any
-    ) -> None:
+    async def _update(self, *filters: ColumnElement[bool], **values: Any) -> None:
         async with self._get_session() as session:
             await session.execute(
                 update(self.__model__).filter(*filters).values(**values)

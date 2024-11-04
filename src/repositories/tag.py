@@ -23,7 +23,6 @@ class TagRepository(Repository[Tag]):
 
         return TagSchema(**asdict(result)) if result else None
 
-
     async def delete_tag(self, tag_name: str, user_schema: UserSchema) -> None:
         """Установить статус токена"""
 

@@ -1,3 +1,6 @@
+from datetime import datetime
+from typing import List
+
 from sqlalchemy import (
     BigInteger,
     Column,
@@ -11,7 +14,13 @@ from sqlalchemy import (
     func,
     Table,
 )
-from sqlalchemy.orm import relationship, DeclarativeBase, MappedAsDataclass
+from sqlalchemy.orm import (
+    relationship,
+    DeclarativeBase,
+    MappedAsDataclass,
+    Mapped,
+    mapped_column,
+)
 
 from src.schemas import AnalysisStatusEnum, GenderEnum
 
@@ -23,26 +32,30 @@ class Base(MappedAsDataclass, DeclarativeBase):
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
-    telegram_id = Column(BigInteger, unique=True, nullable=False)
-    gender = Column(Enum(GenderEnum), nullable=False)
-    birth_year = Column(Integer, nullable=False)
-    city = Column(String, nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    telegram_id: Mapped[int] = mapped_column(BigInteger, unique=True, nullable=False)
+    gender: Mapped[GenderEnum] = mapped_column(Enum(GenderEnum), nullable=False)
+    birth_year: Mapped[int] = mapped_column(Integer, nullable=False)
+    city: Mapped[str] = mapped_column(String, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), default_factory=func.now
+    )
 
-    analyses = relationship(
+    analyses: Mapped[List["Analysis"]] = relationship(
         "Analysis",
         back_populates="user",
         cascade="all, delete-orphan",
         lazy="joined",
         uselist=True,
+        default_factory=list,
     )
-    tags = relationship(
+    tags: Mapped[List["Tag"]] = relationship(
         "Tag",
         back_populates="user",
         cascade="all, delete-orphan",
         lazy="joined",
         uselist=True,
+        default_factory=list,
     )
 
     def __repr__(self):
@@ -60,30 +73,81 @@ analysis_tag_association = Table(
 class Analysis(Base):
     __tablename__ = "analyses"
 
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
-    user_id = Column(BigInteger, ForeignKey("users.id"), nullable=False)
-    name = Column(String, nullable=False)
-    s3_address = Column(String, unique=True, nullable=False)
-    status = Column(
-        Enum(AnalysisStatusEnum), nullable=False, default=AnalysisStatusEnum.in_progress
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(
+        BigInteger, ForeignKey("users.id"), nullable=False
     )
-    assigned_operator_id = Column(BigInteger, ForeignKey("operators.id"), nullable=True)
-    result = Column(Text, nullable=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(
-        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    s3_address: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+    assigned_operator_id: Mapped[int | None] = mapped_column(
+        BigInteger, ForeignKey("operators.id"), nullable=True
     )
-
-    user = relationship("User", back_populates="analyses")
-    assigned_operator = relationship(
-        "Operator", back_populates="analyses", lazy="joined"
+    result: Mapped[str | None] = mapped_column(Text, nullable=True)
+    user: Mapped["User"] = relationship(
+        "User", back_populates="analyses", lazy="joined"
     )
-    tags = relationship(
-        "Tag", secondary=analysis_tag_association, back_populates="analyses"
+    assigned_operator: Mapped["Operator|None"] = relationship(
+        "Operator",
+        back_populates="analyses",
+        lazy="joined",
+        default=None,
+    )
+    tags: Mapped[List["Tag"]] = relationship(
+        "Tag",
+        secondary=analysis_tag_association,
+        back_populates="analyses",
+        uselist=True,
+        default_factory=list,
+        lazy="joined",
+    )
+    status: Mapped[AnalysisStatusEnum] = mapped_column(
+        Enum(AnalysisStatusEnum),
+        nullable=False,
+        default=AnalysisStatusEnum.in_progress,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        default_factory=func.now,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+        default_factory=func.now,
     )
 
     def __repr__(self):
         return f"<Analysis(id={self.id}, name='{self.name}', status='{self.status.value}')>"
+
+
+# class Analysis(Base):
+#     __tablename__ = "analyses"
+#
+#     id = Column(BigInteger, primary_key=True, autoincrement=True)
+#     user_id = Column(BigInteger, ForeignKey("users.id"), nullable=False)
+#     name = Column(String, nullable=False)
+#     s3_address = Column(String, unique=True, nullable=False)
+#     status = Column(
+#         Enum(AnalysisStatusEnum), nullable=False, default=AnalysisStatusEnum.in_progress
+#     )
+#     assigned_operator_id = Column(BigInteger, ForeignKey("operators.id"), nullable=True)
+#     result = Column(Text, nullable=True)
+#     created_at = Column(DateTime(timezone=True), server_default=func.now())
+#     updated_at = Column(
+#         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+#     )
+#
+#     user = relationship("User", back_populates="analyses")
+#     assigned_operator = relationship(
+#         "Operator", back_populates="analyses", lazy="joined"
+#     )
+#     tags = relationship(
+#         "Tag", secondary=analysis_tag_association, back_populates="analyses"
+#     )
+#
+#     def __repr__(self):
+#         return f"<Analysis(id={self.id}, name='{self.name}', status='{self.status.value}')>"
 
 
 class Tag(Base):
@@ -103,45 +167,84 @@ class Tag(Base):
         return f"<Tag(id={self.id}, name='{self.name}')>"
 
 
+class Token(Base):
+    __tablename__ = "tokens"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+
+    value: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), default_factory=func.now
+    )
+
+
 class Operator(Base):
     __tablename__ = "operators"
 
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
-    telegram_id = Column(BigInteger, unique=True, nullable=False)
-    is_active = Column(Boolean, nullable=False, default=True)
-    token_id = Column(BigInteger, ForeignKey("tokens.id"), nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(
-        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    telegram_id: Mapped[int] = mapped_column(BigInteger, unique=True, nullable=False)
+    token_id: Mapped[int] = mapped_column(
+        BigInteger, ForeignKey("tokens.id"), nullable=False
     )
-
-    token = relationship(
+    token: Mapped[Token] = relationship(
         "Token",
-        back_populates="operator",
         uselist=False,
         lazy="joined",
-        foreign_keys=token_id,
+        foreign_keys=[token_id],
     )
-    analyses = relationship(
+
+    is_online: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        default_factory=func.now,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+        default_factory=func.now,
+    )
+    analyses: Mapped[list[Analysis]] = relationship(
         "Analysis",
         back_populates="assigned_operator",
         uselist=True,
+        default_factory=list,
+        lazy="joined",
     )
 
     def __repr__(self):
         return f"<Operator(id={self.id}, telegram_id={self.telegram_id})>"
 
+    # def __huepr__(hueself):
+    #     return hueself.__repr__()
 
-class Token(Base):
-    __tablename__ = "tokens"
 
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
-
-    value = Column(String, unique=True, nullable=False)
-    is_active = Column(Boolean, nullable=False, default=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-    operator = relationship("Operator", back_populates="token")
-
-    def __repr__(self):
-        return f"<Token(id={self.id}, operator_id={self.operator_id})>"
+# class Operator(Base):
+#     __tablename__ = "operators"
+#
+#     id = Column(BigInteger, primary_key=True, autoincrement=True)
+#     telegram_id = Column(BigInteger, unique=True, nullable=False)
+#     is_online = Column(Boolean, nullable=False, default=True)
+#     token_id = Column(BigInteger, ForeignKey("tokens.id"), nullable=False)
+#     created_at = Column(DateTime(timezone=True), server_default=func.now())
+#     updated_at = Column(
+#         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+#     )
+#
+#     token = relationship(
+#         "Token",
+#         back_populates="operator",
+#         uselist=False,
+#         lazy="joined",
+#         foreign_keys=token_id,
+#     )
+#     analyses = relationship(
+#         "Analysis",
+#         back_populates="assigned_operator",
+#         uselist=True,
+#     )
+#
+#     def __repr__(self):
+#         return f"<Operator(id={self.id}, telegram_id={self.telegram_id})>"
