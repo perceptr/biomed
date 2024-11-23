@@ -14,40 +14,28 @@ start_router = Router()
 
 @start_router.message(CommandStart(), ~HasReadPrivacyPolicyFilter())
 async def user_has_not_read_privacy_policy(message: Message):
-    await message.answer(
-        START_ANSWER_TEXT,
-        reply_markup=kb_privacy_policy()
-    )
+    await message.answer(START_ANSWER_TEXT, reply_markup=kb_privacy_policy())
 
 
 @start_router.message(CommandStart(), ~HasRegisteredFilter())
 async def user_has_not_registered(message: Message):
-    await message.answer(
-        "Надо зарегистрироваться:",
-        reply_markup=kb_register()
-    )
+    await message.answer("Надо зарегистрироваться:", reply_markup=kb_register())
 
-@start_router.message(CommandStart(), HasRegisteredFilter(), HasReadPrivacyPolicyFilter())
+
+@start_router.message(
+    CommandStart(), HasRegisteredFilter(), HasReadPrivacyPolicyFilter()
+)
 async def cmd_start(message: Message, state: FSMContext):
     await state.clear()
-    await message.answer(
-        "Выберите опцию:",
-        reply_markup=kb_main_menu()
-    )
+    await message.answer("Выберите опцию:", reply_markup=kb_main_menu())
 
 
-@start_router.callback_query(F.data == 'main_menu')
+@start_router.callback_query(F.data == "main_menu")
 async def main_menu(call: CallbackQuery, state: FSMContext):
     await state.clear()
-    await call.message.answer(
-        "Выберите опцию:",
-        reply_markup=kb_main_menu()
-    )
+    await call.message.answer("Выберите опцию:", reply_markup=kb_main_menu())
 
 
-@start_router.callback_query(F.data == 'privacy_ok')
+@start_router.callback_query(F.data == "privacy_ok")
 async def capture_privacy_policy_ok(call: CallbackQuery):
-    await call.message.answer(
-        "Надо зарегистрироваться:",
-        reply_markup=kb_register()
-    )
+    await call.message.answer("Надо зарегистрироваться:", reply_markup=kb_register())

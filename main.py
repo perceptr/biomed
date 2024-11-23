@@ -36,7 +36,7 @@ async def lifespan() -> AsyncIterator[None]:
 
 
 async def start_app():
-    async_sessionmaker_ = db_module.get_async_sessionmaker() # noqa
+    async_sessionmaker_ = db_module.get_async_sessionmaker()  # noqa
     dp.include_router(start_router)
     dp.include_router(user_info_router)
     dp.include_router(upload_document_router)

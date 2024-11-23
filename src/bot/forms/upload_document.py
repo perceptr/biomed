@@ -19,33 +19,33 @@ class Form(StatesGroup):
 upload_document_router = Router()
 
 
-@upload_document_router.message(Command('test'))
+@upload_document_router.message(Command("test"))
 async def start_upload_document(message: Message, state: FSMContext):
     await state.clear()
     async with ChatActionSender.typing(bot=bot, chat_id=message.chat.id):
-        await message.answer('Пожалуйста, назовите документ.')
+        await message.answer("Пожалуйста, назовите документ.")
     await state.set_state(Form.title)
 
 
-@upload_document_router.callback_query(F.data == 'upload_documents')
+@upload_document_router.callback_query(F.data == "upload_documents")
 async def start_upload_document(call: CallbackQuery, state: FSMContext):
     await state.clear()
     async with ChatActionSender.typing(bot=bot, chat_id=call.message.chat.id):
-        await call.message.answer('Пожалуйста, назовите документ.')
+        await call.message.answer("Пожалуйста, назовите документ.")
     await state.set_state(Form.title)
 
 
 @upload_document_router.message(F.text, Form.title)
 async def capture_title(message: Message, state: FSMContext):
     await state.update_data(name=message.text)
-    await message.answer('Отправляй фото')
+    await message.answer("Отправляй фото")
     await state.set_state(Form.document)
 
 
 @upload_document_router.message(F.photo, Form.document)
 async def capture_photo(message: Message, state: FSMContext):
     async with ChatActionSender.typing(bot=bot, chat_id=message.chat.id):
-        name = await state.get_value('name')
+        name = await state.get_value("name")
         photo = message.photo[-1]
 
         file_info = await bot.get_file(photo.file_id)
@@ -61,6 +61,6 @@ async def capture_photo(message: Message, state: FSMContext):
         await send_analysis(message.from_user.id, **data)
 
         await message.answer(
-            'Хорошо! Начинаю распознавать файл. Когда всё будет готово, я отправлю результат в чат.',
-            reply_markup=kb_back_to_main_menu()
+            "Хорошо! Начинаю распознавать файл. Когда всё будет готово, я отправлю результат в чат.",
+            reply_markup=kb_back_to_main_menu(),
         )

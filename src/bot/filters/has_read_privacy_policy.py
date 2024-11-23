@@ -11,5 +11,7 @@ class HasReadPrivacyPolicyFilter(BaseFilter):
         self.user_ids = 2
 
     async def __call__(self, message: Message) -> bool:
-        has_registered = await is_user_created(message.from_user.id)
-        return has_registered
+        return True
+        # has_registered = await is_user_created(message.from_user.id)
+
+        # return has_registered

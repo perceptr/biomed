@@ -248,3 +248,31 @@ class Operator(Base):
 #
 #     def __repr__(self):
 #         return f"<Operator(id={self.id}, telegram_id={self.telegram_id})>"
+
+
+class AnalysisHistory(Base):
+    __tablename__ = "analysis_history"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    analysis_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    user_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    s3_address: Mapped[str] = mapped_column(String, nullable=False)
+    assigned_operator_id: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    result: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[AnalysisStatusEnum] = mapped_column(
+        Enum(AnalysisStatusEnum), nullable=False
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
+
+    operation: Mapped[str] = mapped_column(
+        String, nullable=False
+    )  # 'INSERT', 'UPDATE', 'DELETE'
+    operation_timestamp: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
