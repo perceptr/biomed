@@ -6,7 +6,13 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 import src.dependencies.db as db_module
+from src.bot.forms.upload_document import upload_document_router
+from src.bot.forms.user_form import user_info_router
+from src.bot.handlers.edit_docuents import edit_documents_router
+from src.bot.handlers.list_documents import list_documents_router
+from src.bot.handlers.start import start_router
 from src.settings import DB_USER, DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT
+from src.bot.create_bot import bot, dp
 
 
 @asynccontextmanager
@@ -31,6 +37,13 @@ async def lifespan() -> AsyncIterator[None]:
 
 async def start_app():
     async_sessionmaker_ = db_module.get_async_sessionmaker() # noqa
+    dp.include_router(start_router)
+    dp.include_router(user_info_router)
+    dp.include_router(upload_document_router)
+    dp.include_router(list_documents_router)
+    dp.include_router(edit_documents_router)
+    await bot.delete_webhook(drop_pending_updates=True)
+    await dp.start_polling(bot)
 
 
 async def main():

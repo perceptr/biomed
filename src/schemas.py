@@ -127,3 +127,5 @@ class AnalysisCreateSchema(AnalysisSchema):
     """Схема создания анализа"""
 
     id: int | None = None
+
+    status: AnalysisStatusEnum = AnalysisStatusEnum.in_progress
