@@ -5,39 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="47a2f4dd-6177-4ea6-94d3-ca79beffed95" name="Changes" comment="minor fixes">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mocks/documents.py" beforeDir="false" afterPath="$PROJECT_DIR$/mocks/documents.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/aiogram_start.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/aiogram_start.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/answer_texts.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/answer_texts.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/create_bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/create_bot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/db/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/db/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bot/db/db_handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/db/db_handlers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/filters/has_read_privacy_policy.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/filters/has_read_privacy_policy.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bot/filters/has_registered.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/filters/has_registered.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bot/filters/is_admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/filters/is_admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/forms/upload_document.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/forms/upload_document.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/forms/user_form.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/forms/user_form.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/handlers/edit_docuents.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/handlers/edit_docuents.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bot/handlers/list_documents.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/handlers/list_documents.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bot/handlers/start.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/handlers/start.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/keyboards/all_kb.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/keyboards/all_kb.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/keyboards/back_to_main_menu.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/keyboards/back_to_main_menu.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/keyboards/edit_docuemnts_kb.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/keyboards/edit_docuemnts_kb.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/keyboards/kb_sex.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/keyboards/kb_sex.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/keyboards/list_documents_kb.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/keyboards/list_documents_kb.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/keyboards/main_menu.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/keyboards/main_menu.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/keyboards/privacy_policy_kb.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/keyboards/privacy_policy_kb.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bot/keyboards/register_kb.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/keyboards/register_kb.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/utils/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bot/utils/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/utils/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/validators/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/validators/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/validators/validators.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/validators/validators.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/repositories/analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/analysis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/repositories/operator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/operator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/repositories/token.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/token.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/s3/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/s3/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/s3/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/s3/client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -48,14 +28,27 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="SQL File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;NotAmigo&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:perceptr/biomed.git&quot;,
+    &quot;accountId&quot;: &quot;f3437c01-0f1b-4aa3-a3b2-a181f9819e67&quot;
+  },
+  &quot;editorReviewEnabled&quot;: false
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -64,21 +57,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.aiogram.executor": "Run",
-    "Python.aiogram_start (1).executor": "Debug",
-    "Python.aiogram_start.executor": "Run",
-    "Python.biodebug.executor": "Run",
-    "Python.init.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "bot",
-    "last_opened_file_path": "/Users/amigo/Desktop/biomed",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.aiogram.executor&quot;: &quot;Run&quot;,
+    &quot;Python.aiogram_start (1).executor&quot;: &quot;Debug&quot;,
+    &quot;Python.aiogram_start.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.biodebug.executor&quot;: &quot;Run&quot;,
+    &quot;Python.init.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;#3 on bot&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/amigo/Desktop/biomed&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
-}]]></component>
-  <component name="RunManager" selected="Python.biodebug">
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.aiogram_start">
     <configuration name="aiogram_start (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="biomed" />
       <option name="ENV_FILES" value="" />
@@ -184,18 +182,11 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.aiogram_start (1)" />
         <item itemvalue="Python.aiogram_start" />
+        <item itemvalue="Python.aiogram_start (1)" />
         <item itemvalue="Python.create_bot" />
       </list>
     </recent_temporary>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-python-sdk-d7ad00fb9fc3-c546a90a8094-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-242.23726.102" />
-      </set>
-    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -217,7 +208,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/repositories/user.py</url>
-          <line>55</line>
+          <line>64</line>
           <option name="timeStamp" value="18" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">

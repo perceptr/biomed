@@ -10,6 +10,11 @@ def kb_register():
                 InlineKeyboardButton(
                     text="Зарегистрироваться", callback_data="register_user"
                 )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="Зарегистрироваться как оператор", callback_data="register_operator"
+                )
             ]
         ],
     )

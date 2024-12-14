@@ -1,5 +1,5 @@
 from asyncio import Semaphore
-from sqlalchemy import null, select
+from sqlalchemy import null, select, desc
 from sqlalchemy.orm import joinedload
 
 from src.repositories.base import Repository
@@ -73,7 +73,7 @@ class AnalysisRepository(Repository[Analysis]):
                 select(Analysis)
                 .options(joinedload(Analysis.user))
                 .filter(Analysis.assigned_operator_id == null())
-                .order_by(Analysis.created_at.asc())
+                .order_by(desc(Analysis.created_at))
             )
 
             result = records.scalars().first()
@@ -117,4 +117,13 @@ class AnalysisRepository(Repository[Analysis]):
 
             await self._set_operator_to_analysis(analysis.id, operator_id)
 
-            return await self._get(Analysis.id == analysis.id)
+            return AnalysisSchema.model_validate(analysis)
+
+    async def get_uncompleted_analysis_count(self) -> int:
+        async with self._get_session() as session:
+            records = await session.execute(
+                select(Analysis)
+                .options(joinedload(Analysis.user))
+                .filter(Analysis.assigned_operator_id == null())
+            )
+        return len(records.scalars().unique().all())

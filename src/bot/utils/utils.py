@@ -1,7 +1,7 @@
 import os
 import re
 from datetime import datetime
-from random import randint
+from random import randint, random
 
 from aiogram.types import FSInputFile
 
@@ -22,8 +22,8 @@ async def upload_image_to_s3(filename, key: str) -> None:
     os.remove(filename)
 
 
-def download_image_from_s3(key, filename):
-    s3.download(key, filename)
+async def download_image_from_s3(key, filename):
+    await s3.download(key, filename)
     return FSInputFile(filename)
 
 
@@ -34,7 +34,12 @@ def add_data_to_key(key: str) -> str:
 
 def generate_tmp_filename(user_id: int) -> str:
     filename = f"/tmp/{add_data_to_key(str(user_id))}"
-    os.open(filename, 644)
+
+    with open(filename, 'w') as file:
+        pass
+
+    os.chmod(filename, 0o644)
+
     return filename
 
 
@@ -53,3 +58,6 @@ def get_gender_by_choice(choice: str):
         return GenderEnum.female
     else:
         raise KeyError
+
+def generate_token():
+    return f'{randint(1, 10000000000)}ilya'

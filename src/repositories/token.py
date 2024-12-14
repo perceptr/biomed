@@ -21,6 +21,14 @@ class TokenRepository(Repository[Token]):
 
         return TokenSchema(**asdict(result)) if result else None
 
+
+    async def get_token_by_id(self, token_id: int) -> TokenSchema | None:
+        """Получить токен по значению"""
+
+        result = await self._get(Token.id == token_id)
+
+        return TokenSchema(**asdict(result)) if result else None
+
     async def set_token_status(self, token_value: str, *, is_active: bool) -> None:
         """Установить статус токена"""
         # todo если по логике удобнее получать через id, поменять на id

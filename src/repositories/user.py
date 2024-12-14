@@ -19,9 +19,18 @@ class UserRepository(Repository[User]):
     async def get_user_by_telegram_id(self, telegram_id: int) -> UserSchema | None:
         """Получить запись о пользователе по telegram_id"""
 
-        result = await self._get(User.telegram_id == telegram_id)
+        async with self._get_session() as session:
+            result = await session.execute(
+                select(User)
+                .options(selectinload(User.analyses))
+                .where(User.telegram_id == telegram_id)
+            )
+        user = result.scalars().first()
 
-        return UserSchema(**asdict(result)) if result else None
+        if user is None:
+            return None
+
+        return UserSchema.model_validate(user)
 
     async def get_analyses_by_telegram_id(self, telegram_id: int) -> [AnalysisSchema]:
         """Получить список анализов пользователя по telegram_id"""

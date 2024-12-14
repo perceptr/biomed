@@ -1,12 +1,12 @@
-from typing import List
-
 from aiogram.filters import BaseFilter
 from aiogram.types import Message
 
+from src.settings import ADMINS
 
-class IsAdmin(BaseFilter):
-    def __init__(self, user_ids: List[int]) -> None:
-        self.user_ids = user_ids
+
+class IsAdminFilter(BaseFilter):
+    def __init__(self) -> None:
+        self.user_ids = set(ADMINS)
 
     async def __call__(self, message: Message) -> bool:
-        return message.from_user.id in self.user_ids
+        return str(message.from_user.id) in self.user_ids

@@ -20,11 +20,9 @@ async def list_documents_handler(call: CallbackQuery, state: FSMContext):
     await call.answer()
     offset = int(call.data.split(":")[-1])
     async with ChatActionSender.typing(bot=bot, chat_id=call.message.chat.id):
-        print(f"Option 1: {call.message.from_user.id}")
-        print(f"Option 2: {call.from_user.id}")
         docs: list["AnalysisSchema"] = await get_documents_by_user(
             call.from_user.id
-        )  # call.from_user.id
+        )
         await call.message.answer(
             "Выберите интересующую вас расшифровку:",
             reply_markup=kb_list_documents(docs, offset),

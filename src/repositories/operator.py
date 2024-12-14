@@ -1,5 +1,6 @@
 from dataclasses import asdict
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 from src.repositories.base import Repository
 from src.models import Operator, Token
@@ -34,9 +35,19 @@ class OperatorRepository(Repository[Operator]):
     ) -> OperatorSchema | None:
         """Получить запись об операторе по telegram_id"""
 
-        result = await self._get(Operator.telegram_id == telegram_id)
+        async with self._get_session() as session:
+            result = await session.execute(
+                select(Operator)
+                .options(selectinload(Operator.analyses))
+                .filter(Operator.telegram_id == telegram_id)
+            )
 
-        return OperatorSchema(**asdict(result)) if result else None
+        operator = result.scalars().first()
+
+        if operator is None:
+            return None
+
+        return OperatorSchema.model_validate(operator)
 
     async def get_operator_by_token(self, token_value: str) -> OperatorSchema | None:
         """Получить запись об операторе по токену"""

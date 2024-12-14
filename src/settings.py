@@ -1,6 +1,7 @@
 import os
 
 from dotenv import load_dotenv
+from json import loads
 
 load_dotenv()
 
@@ -14,3 +15,4 @@ S3_URL = os.getenv("S3_URL")
 S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+ADMINS = loads(os.getenv("ADMINS"))
