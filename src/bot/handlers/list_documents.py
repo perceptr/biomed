@@ -3,10 +3,12 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from aiogram.utils.chat_action import ChatActionSender
 from src.bot.create_bot import bot
-from src.bot.db.db_handlers import get_documents_by_user
+from src.bot.db.db_handlers import get_documents_by_user, get_document
 from src.bot.keyboards.back_to_main_menu import kb_back_to_main_menu
 from src.bot.keyboards.list_documents_kb import kb_list_documents
 from typing import TYPE_CHECKING
+
+from src.bot.utils.utils import get_analysis_photo
 
 if TYPE_CHECKING:
     from src.schemas import AnalysisSchema
@@ -33,8 +35,14 @@ async def list_documents_handler(call: CallbackQuery, state: FSMContext):
 async def get_current_document(call: CallbackQuery):
     await call.answer()
     qst_id = int(call.data.replace("list_doc:", ""))
-    # TODO: ходим в базку за расшифровкой
-    await call.message.answer(
-        f"Информация по выбранному анализу: текст расшифровки документа номер {qst_id}",
+    analysis = await get_document(qst_id)
+    photo = await get_analysis_photo(analysis)
+    await call.message.answer_photo(
+        photo,
+        caption=f"""
+Информация по расшифровке "{analysis.name}":
+
+{analysis.result}
+""",
         reply_markup=kb_back_to_main_menu(),
     )

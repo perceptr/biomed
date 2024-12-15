@@ -6,7 +6,7 @@ from random import randint, random
 from aiogram.types import FSInputFile
 
 from src.bot.create_bot import s3
-from src.schemas import GenderEnum
+from src.schemas import GenderEnum, AnalysisSchema
 
 
 def has_user_read_privacy_policy():
@@ -61,3 +61,9 @@ def get_gender_by_choice(choice: str):
 
 def generate_token():
     return f'{randint(1, 10000000000)}ilya'
+
+
+async def get_analysis_photo(analysis: AnalysisSchema):
+    tmp_file_name = generate_tmp_filename(analysis.user.telegram_id)
+    photo = await download_image_from_s3(analysis.s3_address, tmp_file_name)
+    return photo

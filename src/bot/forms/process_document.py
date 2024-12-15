@@ -10,7 +10,7 @@ from aiogram.fsm.state import State, StatesGroup
 
 from src.bot.db.db_handlers import send_analysis, count_uncompleted_analysis, set_operator_to_analysis, \
     unset_operator_to_analysis, finish_document
-from src.bot.forms.utils import get_analysis_photo
+from src.bot.forms.utils import get_analysis_photo, send_message_to_user
 from src.bot.keyboards.apply_file_for_work_kb import kb_apply_file_for_work
 from src.bot.keyboards.back_to_main_menu import kb_back_to_main_menu
 from src.bot.keyboards.refuse_to_translate_kb import kb_refuse_to_translate
@@ -57,7 +57,7 @@ async def capture_document(call: CallbackQuery, state: FSMContext):
 
         await state.update_data(analysis=analysis)
 
-        photo = await get_analysis_photo(call.message.from_user.id, analysis)
+        photo = await get_analysis_photo(analysis)
 
         await call.message.answer_photo(
             photo,
@@ -112,13 +112,10 @@ async def refuse_to_process_yes(call: CallbackQuery, state: FSMContext):
 async def apply_document(call: CallbackQuery, state: FSMContext):
     analysis: AnalysisSchema = await state.get_value('analysis')
     text = await state.get_value('text')
-    await bot.send_message(analysis.user.telegram_id, f'А вот ваш текст {text}')
     await finish_document(analysis.id, text)
     await call.message.answer(
         'Расшифровка успешно добавлена',
         reply_markup=kb_back_to_main_menu()
     )
+    await send_message_to_user(analysis, text)
     await state.clear()
-
-
-

@@ -121,7 +121,6 @@ async def set_operator_to_analysis(telegram_id: int):
 async def unset_operator_to_analysis(telegram_id: int):
     async_sessionmaker_ = get_async_sessionmaker()
     analysis_repository = AnalysisRepository(async_sessionmaker_)
-    operator_repository = OperatorRepository(async_sessionmaker_)
     operator = await get_operator_by_tg_id(telegram_id)
     await analysis_repository.unset_operator_from_analyses(operator.id)
 
@@ -130,3 +129,10 @@ async def finish_document(analysis_id: int, text: str):
     async_sessionmaker_ = get_async_sessionmaker()
     analysis_repository = AnalysisRepository(async_sessionmaker_)
     await analysis_repository.complete_analysis(analysis_id, text)
+
+
+async def get_document(analysis_id: int):
+    async_sessionmaker_ = get_async_sessionmaker()
+    analysis_repository = AnalysisRepository(async_sessionmaker_)
+    analysis = await analysis_repository.get_analysis_by_id(analysis_id)
+    return analysis

@@ -7,11 +7,13 @@ from aiogram.types import CallbackQuery, Message
 from aiogram.utils.chat_action import ChatActionSender
 
 from src.bot.create_bot import bot
+from src.bot.db.db_handlers import get_documents_by_user
 from src.bot.keyboards.back_to_main_menu import kb_back_to_main_menu
 from src.bot.keyboards.edit_docuemnts_kb import kb_edit_document
 from src.bot.keyboards.list_documents_kb import kb_list_edit_documents
 from src.bot.keyboards.main_menu import kb_main_menu
 from mocks.documents import get_mock_documents
+from src.schemas import AnalysisSchema
 
 edit_documents_router = Router()
 
@@ -28,20 +30,10 @@ async def handle_list_edit_documents(call: CallbackQuery, state: FSMContext):
     await call.answer()
     offset = int(call.data.split(":")[-1])
     async with ChatActionSender.typing(bot=bot, chat_id=call.message.chat.id):
-        docs = get_mock_documents()
-        await call.message.answer(
-            "Выберите интересующую вас расшифровку:",
-            reply_markup=kb_list_edit_documents(docs, offset),
+        docs: list["AnalysisSchema"] = await get_documents_by_user(
+            call.from_user.id
         )
-
-
-@edit_documents_router.message(Command("test2"))
-async def handle_list_edit_documents(message: Message, state: FSMContext):
-    await state.clear()
-    offset = 0
-    async with ChatActionSender.typing(bot=bot, chat_id=message.chat.id):
-        docs = get_mock_documents()
-        await message.answer(
+        await call.message.answer(
             "Выберите интересующую вас расшифровку:",
             reply_markup=kb_list_edit_documents(docs, offset),
         )

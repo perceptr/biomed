@@ -1,8 +1,15 @@
-from src.bot.utils import generate_tmp_filename, download_image_from_s3
+from src.bot.create_bot import bot
+from src.bot.utils.utils import get_analysis_photo
 from src.schemas import AnalysisSchema
 
 
-async def get_analysis_photo(user_id : int, analysis: AnalysisSchema):
-    tmp_file_name = generate_tmp_filename(user_id)
-    photo = await download_image_from_s3(analysis.s3_address, tmp_file_name)
-    return photo
+async def send_message_to_user(analysis: AnalysisSchema, text: str):
+    photo = await get_analysis_photo(analysis)
+    await bot.send_photo(
+        analysis.user.telegram_id,
+        photo,
+        caption=
+        f"""
+Вот расшифровка вашего анализа "{analysis.name}":
+                   
+{text}""")
