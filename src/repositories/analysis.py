@@ -3,7 +3,7 @@ from sqlalchemy import null, select, desc
 from sqlalchemy.orm import joinedload
 
 from src.repositories.base import Repository
-from src.models import Analysis, User
+from src.models import Analysis, User, Tag
 from src.schemas import (
     AnalysisCreateSchema,
     AnalysisSchema,
@@ -127,3 +127,45 @@ class AnalysisRepository(Repository[Analysis]):
                 .filter(Analysis.assigned_operator_id == null())
             )
         return len(records.scalars().unique().all())
+
+    async def set_edit_note(self, analysis_id: int, edit_note: str) -> None:
+        await self._update(Analysis.id == analysis_id, edit_note=edit_note, status=AnalysisStatusEnum.in_progress)
+
+    async def delete_analysis(self, analysis_id: int) -> None:
+        await self._delete(Analysis.id == analysis_id)
+
+    async def get_analyses_by_tag(self, tag_name: str, user_id: int) -> list[AnalysisSchema]:
+        """Получить по ебалу"""
+
+        async with self._get_session() as session:
+            result = await session.execute(
+                select(Analysis)
+                .join(Analysis.tags)
+                .options(joinedload(Analysis.user), joinedload(Analysis.tags))
+                .where(Tag.name == tag_name, Tag.user_id == user_id)
+            )
+
+            records = result.unique().scalars().all()
+
+            return [AnalysisSchema.model_validate(record) for record in records]
+
+    async def remove_tag_from_analysis(self, tag_name: str, analysis_id: int) -> None:
+        async with self._get_session() as session:
+            result = await session.execute(
+                select(Analysis)
+                .options(joinedload(Analysis.tags))
+                .where(Analysis.id == analysis_id)
+            )
+
+            analysis = result.scalars().first()
+
+            if analysis is None:
+                return
+
+            new_tags = [tag for tag in analysis.tags if tag.name != tag_name]
+
+            if len(new_tags) == len(analysis.tags):
+                return
+
+            analysis.tags = new_tags
+            await session.commit()
