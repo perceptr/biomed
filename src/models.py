@@ -86,6 +86,8 @@ class Analysis(Base):
     user: Mapped["User"] = relationship(
         "User", back_populates="analyses", lazy="joined"
     )
+    edit_note: Mapped[str] = mapped_column(String, unique=False, nullable=True, server_default=None, default=None)
+
     assigned_operator: Mapped["Operator|None"] = relationship(
         "Operator",
         back_populates="analyses",
