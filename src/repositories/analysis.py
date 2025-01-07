@@ -101,6 +101,7 @@ class AnalysisRepository(Repository[Analysis]):
             Analysis.id == analysis_id,
             status=AnalysisStatusEnum.completed,
             result=result_text,
+            edit_note=None,
         )
 
     async def set_operator_to_oldest_uncompleted_analysis(
@@ -129,7 +130,18 @@ class AnalysisRepository(Repository[Analysis]):
         return len(records.scalars().unique().all())
 
     async def set_edit_note(self, analysis_id: int, edit_note: str) -> None:
-        await self._update(Analysis.id == analysis_id, edit_note=edit_note, status=AnalysisStatusEnum.in_progress)
+        await self._update(
+            Analysis.id == analysis_id,
+            edit_note=edit_note,
+            status=AnalysisStatusEnum.in_progress,
+            assigned_operator_id=None,
+        )
+
+    async def set_new_title(self, analysis_id: int, title: str) -> None:
+        await self._update(
+            Analysis.id == analysis_id,
+            name=title,
+        )
 
     async def delete_analysis(self, analysis_id: int) -> None:
         await self._delete(Analysis.id == analysis_id)

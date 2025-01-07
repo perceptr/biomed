@@ -6,12 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="47a2f4dd-6177-4ea6-94d3-ca79beffed95" name="Changes" comment="minor fixes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/db/db_handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/db/db_handlers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/forms/process_document.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/forms/process_document.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/forms/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/forms/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/handlers/edit_docuents.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/handlers/edit_docuents.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/handlers/list_documents.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/handlers/list_documents.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bot/utils/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/bot/utils/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

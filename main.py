@@ -12,6 +12,7 @@ from src.bot.forms.user_form import user_info_router
 from src.bot.handlers.create_token import create_token_router
 from src.bot.handlers.edit_docuents import edit_documents_router
 from src.bot.handlers.list_documents import list_documents_router
+from src.bot.handlers.logout_operator import logout_operator_router
 from src.bot.handlers.redeem_token import redeem_token_router
 from src.bot.handlers.start import start_router
 from src.settings import DB_USER, DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT
@@ -48,6 +49,7 @@ async def start_app():
     dp.include_router(create_token_router)
     dp.include_router(process_document_router)
     dp.include_router(redeem_token_router)
+    dp.include_router(logout_operator_router)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 

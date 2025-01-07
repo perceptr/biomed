@@ -1,7 +1,9 @@
 import os
 import re
 from datetime import datetime
-from random import randint, random
+from time import time
+from random import randint
+from hashlib import sha256
 
 from aiogram.types import FSInputFile
 
@@ -60,7 +62,7 @@ def get_gender_by_choice(choice: str):
         raise KeyError
 
 def generate_token():
-    return f'{randint(1, 10000000000)}ilya'
+    return sha256((str(time()).encode('utf-8'))).hexdigest()
 
 
 async def get_analysis_photo(analysis: AnalysisSchema):

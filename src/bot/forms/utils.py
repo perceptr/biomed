@@ -13,3 +13,14 @@ async def send_message_to_user(analysis: AnalysisSchema, text: str):
 Вот расшифровка вашего анализа "{analysis.name}":
                    
 {text}""")
+
+
+def get_text_for_operator(analysis: AnalysisSchema) -> str:
+    extras = ""
+    text = "Переведите файл в текст по установленному формату и введите результат в чат."
+    if analysis.edit_note:
+        extras = (f"Расшифровка отправлена на редактирование. Текущий текст расшфировки:\n\n"
+                  f"{analysis.result}\n\n"
+                  f"Комментарий пользователя по поводу расшфировки:\n\n"
+                  f"{analysis.edit_note}\n\n")
+    return f'{extras}{text}'

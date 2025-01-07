@@ -7,12 +7,11 @@ from aiogram.types import CallbackQuery, Message
 from aiogram.utils.chat_action import ChatActionSender
 
 from src.bot.create_bot import bot
-from src.bot.db.db_handlers import get_documents_by_user
+from src.bot.db.db_handlers import get_documents_by_user, get_document, add_edit_note, change_doc_title, delete_analysis
 from src.bot.keyboards.back_to_main_menu import kb_back_to_main_menu
 from src.bot.keyboards.edit_docuemnts_kb import kb_edit_document
 from src.bot.keyboards.list_documents_kb import kb_list_edit_documents
 from src.bot.keyboards.main_menu import kb_main_menu
-from mocks.documents import get_mock_documents
 from src.schemas import AnalysisSchema
 
 edit_documents_router = Router()
@@ -51,14 +50,12 @@ async def handle_edit_doc_title(call: CallbackQuery, state: FSMContext):
 async def handle_single_edit_document(call: CallbackQuery, state: FSMContext):
     await call.answer()
     doc_id = int(call.data.split(":")[-1])
-    await state.update_data(doc_id=doc_id)
     async with ChatActionSender.typing(bot=bot, chat_id=call.message.chat.id):
-        # TODO: ходим в базку за расшифровкой
-        text = "test"
-        await state.update_data(title="title", text=text)
+        analysis = await get_document(doc_id)
+        await state.update_data(analysis=analysis)
         await call.message.answer(
-            f"Информация по выбранному анализу: "
-            f"текст расшифровки {doc_id}\n"
+            f"Информация по расшифровке \"{analysis.name}\":\n"
+            f"{analysis.result}"
             f"Что вы хотите сделать с анализом?",
             reply_markup=kb_edit_document(doc_id),
         )
@@ -66,7 +63,8 @@ async def handle_single_edit_document(call: CallbackQuery, state: FSMContext):
 
 @edit_documents_router.message(F.text, EditDocument.title)
 async def capture_title(message: Message, state: FSMContext):
-    # TODO: ходим в базку, всё из этого меняем
+    analysis: AnalysisSchema = await state.get_value("analysis")
+    await change_doc_title(analysis.id, message.text)
     await state.clear()
     await message.answer(
         f'Название изменено на: "{message.text}"', reply_markup=kb_back_to_main_menu()
@@ -84,6 +82,8 @@ async def handle_edit_doc_text(call: CallbackQuery, state: FSMContext):
 
 @edit_documents_router.message(F.text, EditDocument.text)
 async def capture_title(message: Message, state: FSMContext):
+    analysis = await state.get_value("analysis")
+    await add_edit_note(analysis.id, message.text)
     await state.clear()
     await message.answer(
         "Спасибо за уточнение. Ваш запрос на доработку отправлен оператору. "
@@ -103,11 +103,11 @@ async def handle_delete_doc(call: CallbackQuery, state: FSMContext):
 
 @edit_documents_router.message(F.text == "Удалить", EditDocument.are_you_sure)
 async def yes_i_am_sure(message: Message, state: FSMContext):
+    analysis : AnalysisSchema = await state.get_value('analysis')
+    await delete_analysis(analysis.id)
     await state.clear()
-    # TODO: удаляем
-    title = await state.get_value("title")  # не видим номер расшифровки пока что
     await message.answer(
-        f"Расшифровка под номером № {title} удалена",
+        f"Расшифровка \"{analysis.name}\" удалена",
         reply_markup=kb_back_to_main_menu(),
     )
 
