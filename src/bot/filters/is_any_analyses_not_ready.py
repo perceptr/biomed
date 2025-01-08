@@ -9,5 +9,5 @@ class IsAnyAnalysesNotReady(BaseFilter):
         return
 
     async def __call__(self, message: Message) -> bool:
-        analyses_count = await count_uncompleted_analysis()
+        analyses_count = await count_uncompleted_analysis(message.from_user.id)
         return analyses_count != 0

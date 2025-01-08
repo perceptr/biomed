@@ -79,9 +79,6 @@ async def register_operator(telegram_id: int, token_value: str):
         OperatorCreateSchema(telegram_id=telegram_id, token=token)
     )
 
-    token_repository = TokenRepository(async_sessionmaker_)
-    await token_repository.set_token_status(token_value, is_active=False)
-
     return operator
 
 
@@ -102,10 +99,11 @@ async def get_operator_by_tg_id(telegram_id: int):
     return existing_operator
 
 
-async def count_uncompleted_analysis():
+async def count_uncompleted_analysis(telegram_id: int):
     async_sessionmaker_ = get_async_sessionmaker()
     analysis_repository = AnalysisRepository(async_sessionmaker_)
-    count = await analysis_repository.get_uncompleted_analysis_count()
+    operator = await get_operator_by_tg_id(telegram_id)
+    count = await analysis_repository.get_uncompleted_analysis_count(operator.id)
     return count
 
 
@@ -115,7 +113,7 @@ async def set_operator_to_analysis(telegram_id: int):
     operator = await get_operator_by_tg_id(telegram_id)
     if operator is None:
         return None
-    current_document = await analysis_repository.get_analysis_by_operator(operator.id)
+    current_document = await analysis_repository.get_uncompleted_analysis_by_operator(operator.id)
     if current_document is not None:
         return current_document
     analysis = await analysis_repository.set_operator_to_oldest_uncompleted_analysis(operator.id)
@@ -173,8 +171,12 @@ async def login_or_create_operator(telegram_id: int, token_value: str):
     operator_repository = OperatorRepository(async_sessionmaker_)
     operator = await get_operator_by_tg_id(telegram_id)
     if operator is None:
-        await register_operator(telegram_id, token_value)
-        return
+        operator = await register_operator(telegram_id, token_value)
+        return operator
+
+    token = await get_token_by_value(token_value)
+    if token is None:
+        return None
 
     await operator_repository.set_operator_status(telegram_id, is_online=True)
 

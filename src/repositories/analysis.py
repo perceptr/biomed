@@ -67,6 +67,20 @@ class AnalysisRepository(Repository[Analysis]):
 
             return AnalysisSchema.model_validate(record) if record else None
 
+    async def get_uncompleted_analysis_by_operator(self, operator_id: int) -> AnalysisSchema | None:
+        async with self._get_session() as session:
+            result = await session.execute(
+                select(Analysis)
+                .options(
+                    joinedload(Analysis.user), joinedload(Analysis.assigned_operator)
+                )
+                .where(Analysis.assigned_operator_id == operator_id)
+                .where(Analysis.status == AnalysisStatusEnum.in_progress.value)
+            )
+            record = result.scalars().first()
+
+            return AnalysisSchema.model_validate(record) if record else None
+
     async def _get_oldest_uncompleted_analysis(self) -> AnalysisSchema | None:
         async with self._get_session() as session:
             records = await session.execute(
@@ -120,12 +134,13 @@ class AnalysisRepository(Repository[Analysis]):
 
             return AnalysisSchema.model_validate(analysis)
 
-    async def get_uncompleted_analysis_count(self) -> int:
+    async def get_uncompleted_analysis_count(self, operator_id: int) -> int:
         async with self._get_session() as session:
             records = await session.execute(
                 select(Analysis)
                 .options(joinedload(Analysis.user))
-                .filter(Analysis.assigned_operator_id == null())
+                .where(Analysis.status == AnalysisStatusEnum.in_progress.value)
+                .where((Analysis.assigned_operator_id == null()) | (Analysis.assigned_operator_id == operator_id))
             )
         return len(records.scalars().unique().all())
 

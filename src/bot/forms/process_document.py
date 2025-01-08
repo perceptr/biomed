@@ -12,7 +12,6 @@ from src.bot.db.db_handlers import send_analysis, count_uncompleted_analysis, se
     unset_operator_to_analysis, finish_document
 from src.bot.filters.is_any_analyses_not_ready import IsAnyAnalysesNotReady
 from src.bot.filters.is_operator import IsOperatorFilter
-from src.bot.filters.operator_has_taken_analyses import IsOperatorFree
 from src.bot.forms.utils import get_analysis_photo, send_message_to_user, get_text_for_operator
 from src.bot.keyboards.apply_file_for_work_kb import kb_apply_file_for_work
 from src.bot.keyboards.back_to_main_menu import kb_back_to_main_menu
@@ -37,13 +36,6 @@ async def get_task_not_operator(call: CallbackQuery, state: FSMContext):
     async with ChatActionSender.typing(bot=bot, chat_id=call.message.chat.id):
         await call.message.answer("Вы не оператор")
 
-
-@process_document_router.callback_query(F.data == "take_on_task", ~IsOperatorFree())
-async def get_task_not_operator(call: CallbackQuery):
-    async with ChatActionSender.typing(bot=bot, chat_id=call.message.chat.id):
-        await call.message.answer("У вас уже есть расшифровка в работе")
-
-
 @process_document_router.callback_query(F.data == "take_on_task", ~IsAnyAnalysesNotReady())
 async def get_task_not_operator(call: CallbackQuery, state: FSMContext):
     await state.clear()
@@ -51,11 +43,11 @@ async def get_task_not_operator(call: CallbackQuery, state: FSMContext):
         await call.message.answer("На данный момент нет файлов для расшифровки")
 
 
-@process_document_router.callback_query(F.data == "take_on_task", IsOperatorFilter(), IsAnyAnalysesNotReady(), IsOperatorFree())
+@process_document_router.callback_query(F.data == "take_on_task", IsOperatorFilter(), IsAnyAnalysesNotReady())
 async def start_process_document(call: CallbackQuery, state: FSMContext):
     await state.clear()
     async with ChatActionSender.typing(bot=bot, chat_id=call.message.chat.id):
-        docs_count = await count_uncompleted_analysis()
+        docs_count = await count_uncompleted_analysis(call.from_user.id)
         await call.message.answer(
             f"Файлов для расшфировки: {docs_count}. Вы можете начать работу.",
             reply_markup=kb_apply_file_for_work()
