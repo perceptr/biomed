@@ -18,6 +18,9 @@ from src.bot.handlers.start import start_router
 from src.settings import DB_USER, DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT
 from src.bot.create_bot import bot, dp
 
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from src.tasks.revoke_expired_analyses import task_revoke_expired_analyses
+
 
 @asynccontextmanager
 async def lifespan() -> AsyncIterator[None]:
@@ -30,8 +33,6 @@ async def lifespan() -> AsyncIterator[None]:
     async with async_sessionmaker_() as session:
         await session.execute(select(1))
 
-    print("Успешное соединение с базой!")
-
     db_module.async_sessionmaker_ = async_sessionmaker_
 
     yield
@@ -41,6 +42,10 @@ async def lifespan() -> AsyncIterator[None]:
 
 async def start_app():
     async_sessionmaker_ = db_module.get_async_sessionmaker()  # noqa
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(task_revoke_expired_analyses, "interval", minutes=2)
+    scheduler.start()
+
     dp.include_router(start_router)
     dp.include_router(user_info_router)
     dp.include_router(upload_document_router)
@@ -50,6 +55,7 @@ async def start_app():
     dp.include_router(process_document_router)
     dp.include_router(redeem_token_router)
     dp.include_router(logout_operator_router)
+
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 

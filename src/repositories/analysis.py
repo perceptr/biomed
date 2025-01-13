@@ -1,7 +1,7 @@
 from asyncio import Semaphore
-from sqlalchemy import null, select, desc
+from sqlalchemy import null, select, desc, update
 from sqlalchemy.orm import joinedload
-
+from datetime import datetime, timezone, timedelta
 from src.repositories.base import Repository
 from src.models import Analysis, User, Tag
 from src.schemas import (
@@ -195,4 +195,31 @@ class AnalysisRepository(Repository[Analysis]):
                 return
 
             analysis.tags = new_tags
+            await session.commit()
+
+    async def get_expired_analyses(self) -> list[AnalysisSchema]:
+        cutoff = datetime.now(tz=timezone.utc) - timedelta(minutes=45)
+
+        async with self._get_session() as session:
+            result = await session.execute(
+                select(Analysis)
+                .options(
+                    joinedload(Analysis.user),
+                    joinedload(Analysis.assigned_operator),
+                )
+                .where(Analysis.updated_at < cutoff)
+                .where(Analysis.status == AnalysisStatusEnum.in_progress.value)
+            )
+
+            analyses = result.unique().scalars().all()
+
+        return [AnalysisSchema.model_validate(a) for a in analyses]
+
+    async def revoke_assigned_operators(self, analysis_ids: list[int]) -> None:
+        async with self._get_session() as session:
+            await session.execute(
+                update(Analysis)
+                .where(Analysis.id.in_(analysis_ids))
+                .values(assigned_operator_id=None)
+            )
             await session.commit()
