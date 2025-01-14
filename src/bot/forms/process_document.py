@@ -40,7 +40,7 @@ async def get_task_not_operator(call: CallbackQuery, state: FSMContext):
 async def get_task_not_operator(call: CallbackQuery, state: FSMContext):
     await state.clear()
     async with ChatActionSender.typing(bot=bot, chat_id=call.message.chat.id):
-        await call.message.answer("На данный момент нет файлов для расшифровки")
+        await call.message.answer("На данный момент нет документов для расшифровки")
 
 
 @process_document_router.callback_query(F.data == "take_on_task", IsOperatorFilter(), IsAnyAnalysesNotReady())
@@ -49,7 +49,7 @@ async def start_process_document(call: CallbackQuery, state: FSMContext):
     async with ChatActionSender.typing(bot=bot, chat_id=call.message.chat.id):
         docs_count = await count_uncompleted_analysis(call.from_user.id)
         await call.message.answer(
-            f"Файлов для расшфировки: {docs_count}. Вы можете начать работу.",
+            f"Документов для расшфировки: {docs_count}. Вы можете начать работу.",
             reply_markup=kb_apply_file_for_work()
         )
         await state.set_state(Document.document)
@@ -92,14 +92,14 @@ async def verify_sending(message: Message, state: FSMContext):
 
 
 async def verify_sending_yes(call: CallbackQuery, state: FSMContext):
-    await call.message.answer("Введите текст расшифроки:")
+    await call.message.answer("Введите текст документа:")
     await state.set_state(Document.text)
 
 
 @process_document_router.callback_query(F.data == "refuse_to_translate", Document.text)
 async def refuse_to_process(call: CallbackQuery, state: FSMContext):
     await call.message.answer(
-        "Вы уверены, что хотите отказаться от файла?",
+        "Вы уверены, что хотите отказаться от документа?",
         reply_markup=kb_yes_or_no()
     )
     await state.set_state(Document.refuse)
@@ -115,7 +115,7 @@ async def refuse_to_process_yes(call: CallbackQuery, state: FSMContext):
     await unset_operator_to_analysis(call.from_user.id)
     await state.clear()
     await call.message.answer(
-        "Вы отказались от файла.",
+        "Вы отказались от документа.",
         reply_markup=kb_back_to_main_menu()
     )
 

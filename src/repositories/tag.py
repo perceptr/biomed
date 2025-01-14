@@ -20,7 +20,7 @@ class TagRepository(Repository[Tag]):
             user = users.scalars().first()
 
             if user is None:
-                raise ValueError("Илья, проеб")
+                raise ValueError("No user")
 
             if analysis_id:
                 analyses = await session.execute(
@@ -31,7 +31,7 @@ class TagRepository(Repository[Tag]):
                 analysis = analyses.scalars().first()
 
                 if analysis is None:
-                    raise ValueError("Илья, проеб дважды!")
+                    raise ValueError("No document")
 
             obj = Tag(
                 user_id=user.id,

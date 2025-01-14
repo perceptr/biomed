@@ -1,4 +1,5 @@
 from src.bot.create_bot import bot
+from src.bot.keyboards.back_to_main_menu import kb_back_to_main_menu
 from src.bot.utils.utils import get_analysis_photo
 from src.schemas import AnalysisSchema
 
@@ -12,7 +13,8 @@ async def send_message_to_user(analysis: AnalysisSchema, text: str):
         f"""
 Вот расшифровка вашего анализа "{analysis.name}":
                    
-{text}""")
+{text}"""
+    , reply_markup=kb_back_to_main_menu())
 
 
 def get_text_for_operator(analysis: AnalysisSchema) -> str:

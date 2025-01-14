@@ -24,7 +24,7 @@ class AnalysisRepository(Repository[Analysis]):
             )
             record = records.scalars().first()
             if record is None:
-                raise ValueError("Илья, проеб")
+                raise ValueError("No record")
 
             obj = Analysis(
                 **schema.model_dump(exclude={"user"}),

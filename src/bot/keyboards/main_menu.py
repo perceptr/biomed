@@ -10,10 +10,10 @@ def kb_main_menu():
         ],
         [
             InlineKeyboardButton(
-                text="Список анализов", callback_data="list_documents:0"
+                text="Список расшифровок", callback_data="list_documents:0"
             )
         ],
-        [InlineKeyboardButton(text="Редактировать", callback_data="edit_documents:0")],
+        [InlineKeyboardButton(text="Редактировать расшифровки", callback_data="edit_documents:0")],
     ]
 
     return InlineKeyboardMarkup(

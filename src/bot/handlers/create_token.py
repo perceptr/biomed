@@ -40,3 +40,12 @@ async def cmd_create_token(message: Message):
             f"Сгенерированный токен: {token}",
             reply_markup=kb_back_to_main_menu(),
         )
+
+
+@create_token_router.message(Command("stats"), IsAdminFilter())
+async def cmd_get_stats(message: Message):
+    async with ChatActionSender.typing(bot=bot, chat_id=message.chat.id):
+        await message.answer(
+            "Тут будет статистика",
+            reply_markup=kb_back_to_main_menu(),
+        )

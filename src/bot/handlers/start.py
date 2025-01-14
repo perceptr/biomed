@@ -3,7 +3,6 @@ from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 from src.bot.answer_texts import START_ANSWER_TEXT
-from src.bot.db import is_user_created
 from src.bot.filters.has_read_privacy_policy import HasReadPrivacyPolicyFilter, READ_PRIVACY_POLICY
 from src.bot.filters.has_registered import HasRegisteredFilter
 from src.bot.filters.is_operator import IsOperatorFilter

@@ -38,7 +38,7 @@ async def start_upload_document(call: CallbackQuery, state: FSMContext):
 @upload_document_router.message(F.text, Form.title)
 async def capture_title(message: Message, state: FSMContext):
     await state.update_data(name=message.text)
-    await message.answer("Отправляй фото")
+    await message.answer("Отправьте фото или файл форматов PDF/PNG/JPEG")
     await state.set_state(Form.document)
 
 
@@ -61,6 +61,36 @@ async def capture_photo(message: Message, state: FSMContext):
         await send_analysis(message.from_user.id, **data)
 
         await message.answer(
-            "Хорошо! Начинаю распознавать файл. Когда всё будет готово, я отправлю результат в чат.",
+            "Хорошо! Начинаем распознавать документ. Когда всё будет готово, мы отправим результат в чат.",
             reply_markup=kb_back_to_main_menu(),
         )
+
+
+@upload_document_router.message(F.document, Form.document)
+async def capture_photo(message: Message, state: FSMContext):
+    async with ChatActionSender.typing(bot=bot, chat_id=message.chat.id):
+        name = await state.get_value("name")
+        photo = message.document
+        file_name = photo.file_name.lower()
+
+        if not file_name.endswith(('jpeg', 'img', 'pdf')):
+            await message.answer("Возможно отправить только файлы форматов PDF/IMG/JPEG")
+            return
+
+        file_info = await bot.get_file(photo.file_id)
+        file_path = file_info.file_path
+
+        tmp_file_name = generate_tmp_filename(message.from_user.id)
+        await bot.download_file(file_path, tmp_file_name)
+
+        key = add_data_to_key(name)
+        await upload_image_to_s3(tmp_file_name, key)
+        data = await state.update_data(s3_address=key)
+
+        await send_analysis(message.from_user.id, **data)
+
+        await message.answer(
+            "Хорошо! Начинаем распознавать документ. Когда всё будет готово, мы отправим результат в чат.",
+            reply_markup=kb_back_to_main_menu(),
+        )
+        await state.clear()

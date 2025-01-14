@@ -47,19 +47,3 @@ class UserRepository(Repository[User]):
             raise ValueError(f"Пользователь с telegram_id {telegram_id} не найден.")
 
         return [AnalysisSchema.model_validate(analysis) for analysis in user.analyses]
-
-        # user = await self._get(User.telegram_id == telegram_id)
-        #
-        # if user is None:
-        #     raise ValueError(f"Шлем этого пользователя в пизду {telegram_id}")
-        #
-        # async with self._get_session() as session:
-        #     result = await session.execute(
-        #         select(Analysis)
-        #         .where(Analysis.user_id == user.id)
-        #     )
-        #     records = result.scalars().unique()
-        #
-        # # return AnalysisSchema.model_validate(record) if record else None
-        #
-        # return [AnalysisSchema(**asdict(analysis)) for analysis in records]
