@@ -54,9 +54,9 @@ async def handle_single_edit_document(call: CallbackQuery, state: FSMContext):
         analysis = await get_document(doc_id)
         await state.update_data(analysis=analysis)
         await call.message.answer(
-            f"Информация по расшифровке \"{analysis.name}\":\n"
+            f"Информация по расшифровке \"{analysis.name}\":\n\n"
             f"{analysis.result}"
-            f"Что вы хотите сделать с анализом?",
+            f"\n\nЧто вы хотите сделать с анализом?",
             reply_markup=kb_edit_document(doc_id),
         )
 

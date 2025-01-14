@@ -1,7 +1,9 @@
+from src.bot.db.dto import StatisticsResult
 from src.bot.utils.utils import generate_token
 from src.dependencies.db import get_async_sessionmaker, async_sessionmaker_
 from src.repositories.analysis import AnalysisRepository
 from src.repositories.operator import OperatorRepository
+from src.repositories.statistics import StatisticsRepository
 from src.repositories.token import TokenRepository
 from src.repositories.user import UserRepository
 from src.schemas import UserCreateSchema, AnalysisCreateSchema, TokenCreateSchema, OperatorCreateSchema, AnalysisSchema
@@ -189,3 +191,19 @@ async def get_analysis_by_operator(telegram_id: int):
     operator = await get_operator_by_tg_id(telegram_id)
     result: AnalysisSchema | None = await analysis_repository.get_analysis_by_operator(operator.id)
     return result
+
+
+async def get_statistics() -> StatisticsResult:
+    async_sessionmaker_ = get_async_sessionmaker()
+    statistics_repository = StatisticsRepository(async_sessionmaker_)
+
+    return StatisticsResult(
+        total_users=await statistics_repository.get_total_users(),
+        total_operators=await statistics_repository.get_total_operators(),
+        total_analyses=await statistics_repository.get_total_analyses(),
+        analyses_status_counts=await statistics_repository.get_analyses_status_counts(),
+        top_5_cities=await statistics_repository.get_top_5_cities(),
+    )
+
+
+

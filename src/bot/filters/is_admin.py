@@ -9,4 +9,4 @@ class IsAdminFilter(BaseFilter):
         self.user_ids = set(ADMINS)
 
     async def __call__(self, message: Message) -> bool:
-        return str(message.from_user.id) in self.user_ids
+        return message.from_user.id in self.user_ids
