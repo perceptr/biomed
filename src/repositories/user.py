@@ -1,7 +1,9 @@
 from dataclasses import asdict
 from src.repositories.base import Repository
-from src.models import User
-from src.schemas import UserCreateSchema, UserSchema
+from src.models import User, Analysis
+from src.schemas import UserCreateSchema, UserSchema, AnalysisSchema
+from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 
 class UserRepository(Repository[User]):
@@ -17,6 +19,31 @@ class UserRepository(Repository[User]):
     async def get_user_by_telegram_id(self, telegram_id: int) -> UserSchema | None:
         """Получить запись о пользователе по telegram_id"""
 
-        result = await self._get(User.telegram_id == telegram_id)
+        async with self._get_session() as session:
+            result = await session.execute(
+                select(User)
+                .options(selectinload(User.analyses))
+                .where(User.telegram_id == telegram_id)
+            )
+        user = result.scalars().first()
 
-        return UserSchema(**asdict(result)) if result else None
+        if user is None:
+            return None
+
+        return UserSchema.model_validate(user)
+
+    async def get_analyses_by_telegram_id(self, telegram_id: int) -> [AnalysisSchema]:
+        """Получить список анализов пользователя по telegram_id"""
+
+        async with self._get_session() as session:
+            result = await session.execute(
+                select(User)
+                .options(selectinload(User.analyses))
+                .where(User.telegram_id == telegram_id)
+            )
+            user = result.scalars().first()
+
+        if user is None:
+            raise ValueError(f"Пользователь с telegram_id {telegram_id} не найден.")
+
+        return [AnalysisSchema.model_validate(analysis) for analysis in user.analyses]
